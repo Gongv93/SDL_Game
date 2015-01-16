@@ -1,0 +1,14 @@
+# Compiled
+*.pdb
+*.exe
+*.ilk
+*.obj
+*.pdb
+*.sln
+*.suo
+
+build/
+data/
+
+# Build
+*.bat
