@@ -24,17 +24,35 @@ RenderPixels(game_offscreen_buffer *Buffer, game_state *GameState)
 
 
 internal void
-GameUpdateAndRender(game_offscreen_buffer *Buffer, game_controller_state *Controller, 
+GameUpdateAndRender(game_offscreen_buffer *Buffer, game_input *Input, 
                     game_state *GameState) 
 {    
-    if (Controller->MoveUp)
-        GameState->GreenOffset -= 5;
-    if (Controller->MoveDown)
-        GameState->GreenOffset += 5;
-    if (Controller->MoveRight)
-        GameState->BlueOffset += 5;
-    if (Controller->MoveLeft)
-        GameState->BlueOffset -= 5;
+    for(int ControllerIndex = 0;
+        ControllerIndex < ArrayLength(Input->Controllers);
+        ++ControllerIndex)
+    {
+        game_controller_state *Controller = GetController(Input, ControllerIndex);
+        if(Controller->IsAnalog) {
+            GameState->BlueOffset += (int)(10.0f*Controller->StickAverageX);
+            GameState->GreenOffset += (int)(10.0f*Controller->StickAverageY);
+        }
+        else {
+            if(Controller->MoveLeft)
+            {
+                GameState->BlueOffset -= 10;
+            }
+            
+            if(Controller->MoveRight)
+            {
+                GameState->BlueOffset += 10;
+            }
+        }
+
+        if(Controller->ActionDown)
+        {
+            GameState->GreenOffset += 1;
+        }
+    }
 
     RenderPixels(Buffer, GameState);
 
